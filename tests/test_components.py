@@ -2,6 +2,7 @@ import torch
 
 from components.feature_extractor import ResNetReduced
 from components.tokenizer import FilterTokenLayer, RecurrentTokenLayer, Tokenizer
+from components.transformer import Transformer
 
 
 class TestComponents:
@@ -30,8 +31,15 @@ class TestComponents:
         assert second_layer_output.shape == (10, 16, 256)
 
     def test_tokenizer(self):
-        "Test the composite tokenizer"
+        """Test if the output of the tokenizer has the correct shape"""
         feature_map_input = torch.randn(10, 256, 4)
         tokenizer = Tokenizer(n_token_layer=6, n_channel=256, n_token=16)
         tokenizer_output = tokenizer(feature_map_input)
         assert tokenizer_output.shape == (10, 16, 256)
+
+    def test_transformer(self):
+        """Test if the output of the transformer has the correct shape"""
+        visual_token_in = torch.randn(10, 16, 256)
+        transformer = Transformer(n_channel=256, n_hidden=6)
+        transformer_output = transformer(visual_token_in)
+        assert transformer_output.shape == (10, 16, 256)
