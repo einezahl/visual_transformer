@@ -8,7 +8,7 @@ class Transformer(nn.Module):
     Transformer architecture
     """
 
-    def __init__(self, int, n_channel: int, n_hidden: int) -> None:
+    def __init__(self, n_channel: int, n_hidden: int) -> None:
         super().__init__()
         self.f_1 = nn.Linear(n_channel, n_channel, bias=False)
         self.f_2 = nn.Linear(n_channel, n_channel, bias=False)
