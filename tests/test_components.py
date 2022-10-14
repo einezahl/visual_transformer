@@ -5,6 +5,7 @@ from components.feature_extractor import ResNetReduced
 from components.projector import Projector
 from components.tokenizer import FilterTokenLayer, RecurrentTokenLayer, Tokenizer
 from components.transformer import Transformer
+from components.visual_transformer import VisualTransformer
 
 
 class TestComponents:
@@ -60,3 +61,16 @@ class TestComponents:
         classifier = Classifier(256, 100)
         classifier_output = classifier(feature_map_input)
         assert classifier_output.shape == (10, 100)
+
+    def test_visual_transformer(self):
+        """Test if the output of the classifier has the correct shape"""
+        feature_map_input = torch.randn(10, 256, 2, 2)
+
+        tokenizer = Tokenizer(n_token_layer=6, n_channel=256, n_token=16)
+        transformer = Transformer(n_channel=256, n_hidden=6)
+        projector = Projector(n_channel=256)
+        visual_transformer = VisualTransformer(
+            tokenizer=tokenizer, transformer=transformer, projector=projector
+        )
+        visual_transformer_output = visual_transformer(feature_map_input)
+        assert visual_transformer_output.shape == (10, 256, 2, 2)
