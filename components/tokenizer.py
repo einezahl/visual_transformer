@@ -58,3 +58,33 @@ class RecurrentTokenLayer(nn.Module):
         t_out = F.softmax(torch.matmul(w_r, feature_map), dim=1)
         t_out = torch.matmul(t_out, feature_map.transpose(1, 2))
         return t_out
+
+
+class Tokenizer(nn.Module):
+    """
+    Combines the different token layer into a full tokenizer. As the RecurrentTokenLayer
+    requires the feature map of the previous layer, the first layer is a FilterTokenLayer
+    """
+
+    def __init__(self, n_token_layer, n_token, n_channel) -> None:
+        super().__init__()
+        self.first_layer = FilterTokenLayer(n_token, n_channel)
+        self.recurrent_layer = [
+            RecurrentTokenLayer(n_channel) for _ in range(n_token_layer - 1)
+        ]
+
+    def forward(self, feature_map: torch.Tensor) -> torch.Tensor:
+        """Forwards the feature map through recurrent tokenizer layers, as no visual tokens are
+        present in the first layer, the first layer is a filter tokenizer
+
+        Args:
+            feature_map (torch.Tensor): Feature map tensor of the feature extractor, has the
+            dimensions (batch_size, n_channel, feature_width, feature_height)
+
+        Returns:
+            torch.Tensor: Visual token
+        """
+        visual_token = self.first_layer(feature_map)
+        for layer in self.recurrent_layer:
+            visual_token = layer(feature_map, visual_token)
+        return visual_token
