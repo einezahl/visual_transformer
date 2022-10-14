@@ -2,7 +2,7 @@ import torch
 from torch import nn
 
 
-class Classifier(nn.Module):
+class ResNet18Classifier(nn.Module):
     """
     Last few layers of the ResNet architecture, for the classification of the transformed features.
     """

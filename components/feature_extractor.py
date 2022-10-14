@@ -2,7 +2,7 @@ from torch import Tensor, nn
 from torchvision.models import resnet18
 
 
-class ResNetReduced(nn.Module):
+class ResNet18Top(nn.Module):
     """
     The top part of the ResNet architecture, the last two basic blocks are replaced
     by the visual transformer.
