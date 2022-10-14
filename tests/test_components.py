@@ -46,7 +46,7 @@ class TestComponents:
         assert transformer_output.shape == (10, 16, 256)
 
     def test_projector(self):
-        """Test if the output of the transformer has the correct shape"""
+        """Test if the output of the projector has the correct shape"""
         feature_map_input = torch.randn(10, 256, 4)
         visual_token_in = torch.randn(10, 16, 256)
         projector = Projector(n_channel=256)
