@@ -46,8 +46,8 @@ class RecurrentTokenLayer(nn.Module):
         dependent on the weights of the previous layer
 
         Args:
-            feature_map (torch.Tensor): Output of the feature extractor, has the shape (batch_size,
-            n_channel, feature_width, feature_height)
+            feature_map (torch.Tensor): Output of the feature extractor, has the shape
+            (batch_size, n_channel, feature_width*feature_height)
             visual_token_in (torch.Tensor): visual_token of the previous layer, has the shape
             (batch_size, n_token, n_channel)
 
@@ -79,7 +79,7 @@ class Tokenizer(nn.Module):
 
         Args:
             feature_map (torch.Tensor): Feature map tensor of the feature extractor, has the
-            dimensions (batch_size, n_channel, feature_width, feature_height)
+            dimensions (batch_size, n_channel, feature_width*feature_height)
 
         Returns:
             torch.Tensor: Visual token
