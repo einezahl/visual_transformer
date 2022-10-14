@@ -1,4 +1,3 @@
-from xml.sax.handler import feature_external_ges
 import torch
 
 from components.classifier import Classifier
