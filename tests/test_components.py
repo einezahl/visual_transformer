@@ -1,5 +1,7 @@
+from xml.sax.handler import feature_external_ges
 import torch
 
+from components.classifier import Classifier
 from components.feature_extractor import ResNetReduced
 from components.projector import Projector
 from components.tokenizer import FilterTokenLayer, RecurrentTokenLayer, Tokenizer
@@ -52,3 +54,10 @@ class TestComponents:
         projector = Projector(n_channel=256)
         projector_output = projector(feature_map_input, visual_token_in)
         assert projector_output.shape == (10, 256, 4)
+
+    def test_classifier(self):
+        """Test if the output of the classifier has the correct shape"""
+        feature_map_input = torch.randn(10, 256, 2, 2)
+        classifier = Classifier(256, 100)
+        classifier_output = classifier(feature_map_input)
+        assert classifier_output.shape == (10, 100)
