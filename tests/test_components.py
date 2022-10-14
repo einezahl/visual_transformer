@@ -1,6 +1,7 @@
 import torch
 
 from components.feature_extractor import ResNetReduced
+from components.projector import Projector
 from components.tokenizer import FilterTokenLayer, RecurrentTokenLayer, Tokenizer
 from components.transformer import Transformer
 
@@ -43,3 +44,11 @@ class TestComponents:
         transformer = Transformer(n_channel=256, n_hidden=6)
         transformer_output = transformer(visual_token_in)
         assert transformer_output.shape == (10, 16, 256)
+
+    def test_projector(self):
+        """Test if the output of the transformer has the correct shape"""
+        feature_map_input = torch.randn(10, 256, 4)
+        visual_token_in = torch.randn(10, 16, 256)
+        projector = Projector(n_channel=256)
+        projector_output = projector(feature_map_input, visual_token_in)
+        assert projector_output.shape == (10, 256, 4)
