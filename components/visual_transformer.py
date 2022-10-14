@@ -6,7 +6,7 @@ from components.tokenizer import Tokenizer
 from components.transformer import Transformer
 
 
-class VisualTransformerClassifier(nn.Module):
+class VisualTransformer(nn.Module):
     """
     Visual encoder as described in the paper "Visual Transformers:
     Token-based Image Representation and Processing for Computer Vision"
