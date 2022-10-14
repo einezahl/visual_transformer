@@ -16,7 +16,7 @@ class ResNet18Top(nn.Module):
             if p.dim() > 1:
                 nn.init.xavier_uniform_(p)
 
-    def forward(self, x_in: Tensor) -> Tensor:
+    def forward(self, image_batch: Tensor) -> Tensor:
         """Forwards pass throught the top part of the ResNet18 network
 
         Args:
@@ -26,4 +26,4 @@ class ResNet18Top(nn.Module):
             Tensor: Features extracted by the ResNet18 network, of shape
                     (batch_size, n_features, feature_width, feature_height)
         """
-        return self.features(x_in)
+        return self.features(image_batch)
