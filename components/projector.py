@@ -8,7 +8,7 @@ class Projector(nn.Module):
     Projector module, seems like another transformer to me
     """
 
-    def __init__(self, n_channel) -> None:
+    def __init__(self, n_channel: int) -> None:
         super().__init__()
         self.w_query = nn.Linear(n_channel, n_channel)
         self.w_key = nn.Linear(n_channel, n_channel)
