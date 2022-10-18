@@ -13,7 +13,8 @@ class TestVisualTransformerClassifier:
     """Visual transformer classifier tests"""
 
     def test_output_shape(self):
-        """Tests the correct output shape of the composite visual transformer classifier"""
+        """Tests the correct output shape of the composite visual transformer
+        classifier"""
         batch_size = 10
         n_channel = 256
         n_token = 16

@@ -9,13 +9,14 @@ from components.visual_transformer import VisualTransformer
 
 
 class TestComponents:
-    """In this class the components of the visual transformer are tested in a pipeline, where
-    the output of the previous component is the input for the next component
+    """In this class the components of the visual transformer are tested in a
+    pipeline, where the output of the previous component is the input for the
+    next component
     """
 
     def test_feature_extractor(self):
-        """Test if the output of the ResNetReduced class has the correct shape for the CIFAR
-        dataset"""
+        """Test if the output of the ResNetReduced class has the correct shape
+        for the CIFAR dataset"""
         batch_input = torch.randn((10, 3, 32, 32))
 
         rnreduced = ResNet18Top()
@@ -24,7 +25,8 @@ class TestComponents:
         assert preprocessed_data.shape == (10, 256, 2, 2)
 
     def test_tokenizer_components(self):
-        """Test if the output of the components of the tokenizer have the correct shape"""
+        """Test if the output of the components of the tokenizer have the
+        correct shape"""
         feature_map_input = torch.randn(10, 256, 4)
 
         filter_token_layer = FilterTokenLayer(16, 256)
