@@ -18,11 +18,12 @@ class FilterTokenLayer(nn.Module):
         """Forwards pass through the tokinzer layer
 
         Args:
-            feature_map (torch.Tensor): Output of the feature extractor, has the shape (batch_size,
-            n_channel, feature_width, feature_height)
+            feature_map (torch.Tensor): Output of the feature extractor, has
+            the shape (batch_size, n_channel, feature_width, feature_height)
 
         Returns:
-            torch.Tensor: Tokenized feature map, has the shape (batch_size, n_token, n_channel)
+            torch.Tensor: Tokenized feature map, has the shape (batch_size, 
+            n_token, n_channel)
         """
         visual_token = F.softmax(
             self.w_a(feature_map.transpose(1, 2)), dim=1
@@ -41,15 +42,17 @@ class RecurrentTokenLayer(nn.Module):
         self.w_t_r = nn.Linear(n_channel, n_channel, False)
         nn.init.xavier_uniform_(self.w_t_r.weight)
 
-    def forward(self, feature_map: torch.Tensor, visual_token_in: torch.Tensor):
-        """Forwards pass through the recurrent token layer, the weights for the tokenization are
-        dependent on the weights of the previous layer
+    def forward(
+        self, feature_map: torch.Tensor, visual_token_in: torch.Tensor
+    ) -> torch.Tensor:
+        """Forwards pass through the recurrent token layer, the weights for
+        the tokenization are dependent on the weights of the previous layer
 
         Args:
-            feature_map (torch.Tensor): Output of the feature extractor, has the shape
-            (batch_size, n_channel, feature_width*feature_height)
-            visual_token_in (torch.Tensor): visual_token of the previous layer, has the shape
-            (batch_size, n_token, n_channel)
+            feature_map (torch.Tensor): Output of the feature extractor, has
+            the shape (batch_size, n_channel, feature_width*feature_height)
+            visual_token_in (torch.Tensor): visual_token of the previous layer,
+            has the shape (batch_size, n_token, n_channel)
 
         Returns:
             _type_: _description_
@@ -62,8 +65,9 @@ class RecurrentTokenLayer(nn.Module):
 
 class Tokenizer(nn.Module):
     """
-    Combines the different token layer into a full tokenizer. As the RecurrentTokenLayer
-    requires the feature map of the previous layer, the first layer is a FilterTokenLayer
+    Combines the different token layer into a full tokenizer. As the
+    RecurrentTokenLayer requires the feature map of the previous layer, the
+    first layer is a FilterTokenLayer
     """
 
     def __init__(self, n_token_layer, n_token, n_channel) -> None:
@@ -74,12 +78,14 @@ class Tokenizer(nn.Module):
         ]
 
     def forward(self, feature_map: torch.Tensor) -> torch.Tensor:
-        """Forwards the feature map through recurrent tokenizer layers, as no visual tokens are
-        present in the first layer, the first layer is a filter tokenizer
+        """Forwards the feature map through recurrent tokenizer layers, as no
+        visual tokens are present in the first layer, the first layer is a
+        filter tokenizer
 
         Args:
-            feature_map (torch.Tensor): Feature map tensor of the feature extractor, has the
-            dimensions (batch_size, n_channel, feature_width*feature_height)
+            feature_map (torch.Tensor): Feature map tensor of the feature
+            extractor, has the dimensions (batch_size, n_channel, 
+            feature_width*feature_height)
 
         Returns:
             torch.Tensor: Visual token

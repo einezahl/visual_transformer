@@ -4,8 +4,8 @@ from torchvision.models import resnet18
 
 class ResNet18Top(nn.Module):
     """
-    The top part of the ResNet architecture, the last two basic blocks are replaced
-    by the visual transformer.
+    The top part of the ResNet architecture, the last two basic blocks are
+    replaced by the visual transformer.
     """
 
     def __init__(self) -> None:
@@ -20,7 +20,8 @@ class ResNet18Top(nn.Module):
         """Forwards pass throught the top part of the ResNet18 network
 
         Args:
-            x_in (Tensor): Batch of images, of shape (batch_size, n_color_channels, width, height)
+            x_in (Tensor): Batch of images, of shape (batch_size,
+            n_color_channels, width, height)
 
         Returns:
             Tensor: Features extracted by the ResNet18 network, of shape
