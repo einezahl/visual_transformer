@@ -1,6 +1,13 @@
 import torch
 from torch import nn
 
+from components.feature_extractor import ResNet18Top
+from components.visual_transformer import VisualTransformer
+from components.classifier import ResNet18Classifier
+from components.projector import Projector
+from components.tokenizer import Tokenizer
+from components.transformer import Transformer
+
 
 class VisualTransformerClassifier(nn.Module):
     """A classifier constructed by replacing the last two basic blocks of
@@ -31,3 +38,34 @@ class VisualTransformerClassifier(nn.Module):
         return self.classifier(
             self.visual_transformer(self.feature_extractor(image_batch))
         )
+
+
+def create_model(
+    n_token_layer: int, n_token: int, n_channel: int, n_hidden: int, n_classes: int
+) -> VisualTransformerClassifier:
+    """Creates a visual transformer classifier
+    Args:
+        n_token_layer (int): Number of token layer
+        n_token (int): Number of visual token per layer
+        n_channel (int): Number of channel of the output of the feature extractor
+        n_hidden (int): Number of hidden modules in the transformer
+        n_classes (int): Number of classes
+    Returns:
+        VisualTransformerClassifier: Composite Classifier
+    """
+    resnet18_top = ResNet18Top()
+    tokenizer = Tokenizer(
+        n_token_layer=n_token_layer, n_token=n_token, n_channel=n_channel
+    )
+    transformer = Transformer(n_channel=n_channel, n_hidden=n_hidden)
+    projector = Projector(n_channel=n_channel)
+    visual_transformer = VisualTransformer(
+        tokenizer=tokenizer, transformer=transformer, projector=projector
+    )
+    classifier = ResNet18Classifier(in_features=n_channel, out_features=n_classes)
+    visual_transformer_classifier = VisualTransformerClassifier(
+        feature_extractor=resnet18_top,
+        visual_transformer=visual_transformer,
+        classifier=classifier,
+    )
+    return visual_transformer_classifier
