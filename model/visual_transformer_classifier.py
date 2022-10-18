@@ -3,8 +3,8 @@ from torch import nn
 
 
 class VisualTransformerClassifier(nn.Module):
-    """A classifier constructed by replacing the last two basic blocks of ResNet18 by a visual
-    transformer"""
+    """A classifier constructed by replacing the last two basic blocks of
+    ResNet18 by a visual transformer"""
 
     def __init__(
         self,
