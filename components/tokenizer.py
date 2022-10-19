@@ -22,7 +22,7 @@ class FilterTokenLayer(nn.Module):
             the shape (batch_size, n_channel, feature_width, feature_height)
 
         Returns:
-            torch.Tensor: Tokenized feature map, has the shape (batch_size, 
+            torch.Tensor: Tokenized feature map, has the shape (batch_size,
             n_token, n_channel)
         """
         visual_token = F.softmax(
@@ -84,7 +84,7 @@ class Tokenizer(nn.Module):
 
         Args:
             feature_map (torch.Tensor): Feature map tensor of the feature
-            extractor, has the dimensions (batch_size, n_channel, 
+            extractor, has the dimensions (batch_size, n_channel,
             feature_width*feature_height)
 
         Returns:
@@ -94,3 +94,13 @@ class Tokenizer(nn.Module):
         for layer in self.recurrent_layer:
             visual_token = layer(feature_map, visual_token)
         return visual_token
+
+    def to_device(self, device: torch.device) -> None:
+        """Moves the tokenizer to the specified device
+
+        Args:
+            device (torch.device): Device to move the tokenizer to
+        """
+        self.first_layer.to(device)
+        for r_layer in self.recurrent_layer:
+            r_layer.to(device)
