@@ -15,14 +15,27 @@ class VisualTransformerClassifier(nn.Module):
 
     def __init__(
         self,
-        feature_extractor: nn.Module,
-        visual_transformer: nn.Module,
-        classifier: nn.Module,
+        n_token_layer: int,
+        n_token: int,
+        n_channel: int,
+        n_hidden: int,
+        n_classes: int,
     ) -> None:
         super().__init__()
-        self.feature_extractor = feature_extractor
-        self.visual_transformer = visual_transformer
-        self.classifier = classifier
+        self.resnet18_top = ResNet18Top()
+        self.tokenizer = Tokenizer(
+            n_token_layer=n_token_layer, n_token=n_token, n_channel=n_channel
+        )
+        self.transformer = Transformer(n_channel=n_channel, n_hidden=n_hidden)
+        self.projector = Projector(n_channel=n_channel)
+        self.visual_transformer = VisualTransformer(
+            tokenizer=self.tokenizer,
+            transformer=self.transformer,
+            projector=self.projector,
+        )
+        self.classifier = ResNet18Classifier(
+            in_features=n_channel, out_features=n_classes
+        )
 
     def forward(self, image_batch: torch.Tensor) -> torch.Tensor:
         """_summary_
@@ -35,79 +48,18 @@ class VisualTransformerClassifier(nn.Module):
             torch.Tensor: Predictions for each class, of shape
             (batch_size, n_classes)
         """
-        return self.classifier(
-            self.visual_transformer(self.feature_extractor(image_batch))
-        )
+        return self.classifier(self.visual_transformer(self.resnet18_top(image_batch)))
 
+    def to(self, device: torch.device) -> None:
+        """_summary_
 
-def create_model(
-    n_token_layer: int, n_token: int, n_channel: int, n_hidden: int, n_classes: int
-) -> VisualTransformerClassifier:
-    """Creates a visual transformer classifier
-    Args:
-        n_token_layer (int): Number of token layer
-        n_token (int): Number of visual token per layer
-        n_channel (int): Number of channel of the output of the feature extractor
-        n_hidden (int): Number of hidden modules in the transformer
-        n_classes (int): Number of classes
-    Returns:
-        VisualTransformerClassifier: Composite Classifier
-    """
-    resnet18_top = ResNet18Top()
-    tokenizer = Tokenizer(
-        n_token_layer=n_token_layer, n_token=n_token, n_channel=n_channel
-    )
-    transformer = Transformer(n_channel=n_channel, n_hidden=n_hidden)
-    projector = Projector(n_channel=n_channel)
-    visual_transformer = VisualTransformer(
-        tokenizer=tokenizer, transformer=transformer, projector=projector
-    )
-    classifier = ResNet18Classifier(in_features=n_channel, out_features=n_classes)
-    visual_transformer_classifier = VisualTransformerClassifier(
-        feature_extractor=resnet18_top,
-        visual_transformer=visual_transformer,
-        classifier=classifier,
-    )
-    return visual_transformer_classifier
-
-
-def create_model_cuda(
-    n_token_layer: int,
-    n_token: int,
-    n_channel: int,
-    n_hidden: int,
-    n_classes: int,
-    device: torch.device,
-) -> VisualTransformerClassifier:
-    """Creates a visual transformer classifier
-    Args:
-        n_token_layer (int): Number of token layer
-        n_token (int): Number of visual token per layer
-        n_channel (int): Number of channel of the output of the feature extractor
-        n_hidden (int): Number of hidden modules in the transformer
-        n_classes (int): Number of classes
-    Returns:
-        VisualTransformerClassifier: Composite Classifier
-    """
-    resnet18_top = ResNet18Top()
-    resnet18_top.to(device)
-    tokenizer = Tokenizer(
-        n_token_layer=n_token_layer, n_token=n_token, n_channel=n_channel
-    )
-    tokenizer.to_device(device)
-    transformer = Transformer(n_channel=n_channel, n_hidden=n_hidden)
-    transformer.to(device)
-    projector = Projector(n_channel=n_channel)
-    projector.to(device)
-    visual_transformer = VisualTransformer(
-        tokenizer=tokenizer, transformer=transformer, projector=projector
-    )
-    visual_transformer.to(device)
-    classifier = ResNet18Classifier(in_features=n_channel, out_features=n_classes)
-    classifier.to(device)
-    visual_transformer_classifier = VisualTransformerClassifier(
-        feature_extractor=resnet18_top,
-        visual_transformer=visual_transformer,
-        classifier=classifier,
-    )
-    return visual_transformer_classifier
+        Args:
+            device (torch.device): _description_
+        """
+        super().to(device)
+        self.resnet18_top.to(device)
+        self.tokenizer.to(device)
+        self.transformer.to(device)
+        self.projector.to(device)
+        self.visual_transformer.to(device)
+        self.classifier.to(device)

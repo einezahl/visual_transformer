@@ -95,7 +95,7 @@ class Tokenizer(nn.Module):
             visual_token = layer(feature_map, visual_token)
         return visual_token
 
-    def to_device(self, device: torch.device) -> None:
+    def to(self, device: torch.device) -> None:
         """Moves the tokenizer to the specified device
 
         Args:

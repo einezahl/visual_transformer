@@ -5,10 +5,10 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import CIFAR10
 from torchvision.transforms import ToTensor, Normalize, Compose
 
-from model.visual_transformer_classifier import create_model_cuda
+from model.visual_transformer_classifier import VisualTransformerClassifier
 
 BATCH_SIZE = 1024
-EPOCHS = 10
+EPOCHS = 1
 
 
 def main() -> None:
@@ -19,13 +19,12 @@ def main() -> None:
     train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True, **kwargs)
     test_data = CIFAR10(root="data", train=False, download=True, transform=transform)
     test_loader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=True, **kwargs)
-    classifier = create_model_cuda(
+    classifier = VisualTransformerClassifier(
         n_token_layer=6,
         n_token=16,
         n_channel=256,
         n_hidden=16,
         n_classes=10,
-        device=device,
     )
     classifier.to(device)
 
