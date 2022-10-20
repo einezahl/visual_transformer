@@ -28,3 +28,9 @@ class ResNet18Top(nn.Module):
                     (batch_size, n_features, feature_width, feature_height)
         """
         return self.features(image_batch)
+
+
+if __name__ == "__main__":
+    resnet18_top = ResNet18Top()
+    for p in resnet18_top.parameters():
+        print(p.shape)

@@ -31,3 +31,9 @@ class ResNet18Classifier(nn.Module):
         x = torch.flatten(x, start_dim=1, end_dim=3)
         x = self.fully_connected(x)
         return x
+
+
+if __name__ == "__main__":
+    classifier = ResNet18Classifier(256, 10)
+    for p in classifier.parameters():
+        print(p.shape)

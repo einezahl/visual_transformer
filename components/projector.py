@@ -30,9 +30,14 @@ class Projector(nn.Module):
         """
         query = self.w_query(feature_map.transpose(1, 2))
         key = self.w_key(visual_token)
-        query_key = functional.softmax(
-            torch.matmul(query, key.transpose(1, 2)), dim=2)
+        query_key = functional.softmax(torch.matmul(query, key.transpose(1, 2)), dim=2)
         feature_map_attention = feature_map + torch.matmul(
             query_key, visual_token
         ).transpose(1, 2)
         return feature_map_attention
+
+
+if __name__ == "__main__":
+    projector = Projector(256)
+    for p in projector.parameters():
+        print(p.shape)
