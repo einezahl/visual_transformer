@@ -21,7 +21,7 @@ class Trainer:
         for i in range(epoch):
             self.train_epoch(train_loader, i)
 
-    def train_epch(self, train_loader: DataLoader, epoch: int) -> None:
+    def train_epoch(self, train_loader: DataLoader, epoch: int) -> None:
         running_loss = 0.0
         for i, (image_batch, label_batch) in enumerate(train_loader):
             image_batch = image_batch.to(self.device)
