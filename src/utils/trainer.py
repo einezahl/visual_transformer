@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch import optim
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
 
 
 class Trainer:
@@ -11,11 +12,13 @@ class Trainer:
         loss: nn.Module,
         optimizer: optim.Optimizer,
         device: torch.device,
+        writer: SummaryWriter,
     ) -> None:
         self.model = model
         self.loss = loss
         self.optimizer = optimizer
         self.device = device
+        self.writer = writer
 
     def train(self, train_loader: DataLoader, epoch: int) -> None:
         for i in range(epoch):
@@ -32,4 +35,5 @@ class Trainer:
             loss_value.backward()
             self.optimizer.step()
             running_loss += loss_value.item()
+        self.writer.add_scalar("Train/loss", running_loss, epoch)
         print(f"[{epoch + 1}] loss: {running_loss / 100:.3f}")
