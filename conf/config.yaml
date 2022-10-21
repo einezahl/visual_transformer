@@ -1,9 +1,15 @@
-params:
+training_params:
   batch_size : 1024
-  epochs: 100
-  learning_rate: 1e-3
+  epochs: 1
+  lr: 1e-3
+
+model_params:
+  n_token: 16
+  n_token_layer: 6
+  n_hidden_layer: 32
+
 
 paths:
   model: "model"
-  data: "data"
+  data: "${hydra:runtime.cwd}/data"
   log: "log"

@@ -17,24 +17,24 @@ class VisualTransformerClassifier(nn.Module):
         self,
         n_token_layer: int,
         n_token: int,
-        n_channel: int,
         n_hidden: int,
         n_classes: int,
     ) -> None:
         super().__init__()
         self.resnet18_top = ResNet18Top()
+        self.n_channel = self.resnet18_top.n_channel
         self.tokenizer = Tokenizer(
-            n_token_layer=n_token_layer, n_token=n_token, n_channel=n_channel
+            n_token_layer=n_token_layer, n_token=n_token, n_channel=self.n_channel
         )
-        self.transformer = Transformer(n_channel=n_channel, n_hidden=n_hidden)
-        self.projector = Projector(n_channel=n_channel)
+        self.transformer = Transformer(n_channel=self.n_channel, n_hidden=n_hidden)
+        self.projector = Projector(n_channel=self.n_channel)
         self.visual_transformer = VisualTransformer(
             tokenizer=self.tokenizer,
             transformer=self.transformer,
             projector=self.projector,
         )
         self.classifier = ResNet18Classifier(
-            in_features=n_channel, out_features=n_classes
+            in_features=self.n_channel, out_features=n_classes
         )
 
     def forward(self, image_batch: torch.Tensor) -> torch.Tensor:
