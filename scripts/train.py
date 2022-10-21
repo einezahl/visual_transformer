@@ -19,9 +19,9 @@ cs.store(name="cifar_conf", node=CifarConf)
 
 @hydra.main(config_path="../conf", config_name="config", version_base="1.2")
 def main(cfg: CifarConf) -> None:
-    batch_size = cfg.params.batch_size
-    epochs = cfg.params.epochs
-    lr = cfg.params.lr
+    batch_size = cfg.training_params.batch_size
+    epochs = cfg.training_params.epochs
+    lr = cfg.training_params.lr
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     kwargs = {"num_workers": 1, "pin_memory": True} if device == "cuda" else {}
@@ -36,10 +36,9 @@ def main(cfg: CifarConf) -> None:
     )
     test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True, **kwargs)
     classifier = VisualTransformerClassifier(
-        n_token_layer=6,
-        n_token=16,
-        n_channel=256,
-        n_hidden=16,
+        n_token_layer=cfg.model_params.n_token_layer,
+        n_token=cfg.model_params.n_token,
+        n_hidden=cfg.model_params.n_hidden_layer,
         n_classes=10,
     )
     classifier.to(device)

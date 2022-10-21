@@ -12,6 +12,7 @@ class ResNet18Top(nn.Module):
         super().__init__()
         full_resnet18 = resnet18()
         self.features = nn.Sequential(*list(full_resnet18.children())[:-3])
+        self.n_channel = 256
         for p in self.features.parameters():
             if p.dim() > 1:
                 nn.init.xavier_uniform_(p)

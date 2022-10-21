@@ -10,7 +10,6 @@ class TestVisualTransformerClassifier:
         """Tests the correct output shape of the composite visual transformer
         classifier"""
         batch_size = 10
-        n_channel = 256
         n_token = 16
         n_token_layer = 6
         n_hidden = 6
@@ -18,7 +17,6 @@ class TestVisualTransformerClassifier:
         visual_transformer_classifier = VisualTransformerClassifier(
             n_token_layer=n_token_layer,
             n_token=n_token,
-            n_channel=n_channel,
             n_hidden=n_hidden,
             n_classes=10,
         )
@@ -30,7 +28,6 @@ class TestVisualTransformerClassifier:
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         batch_size = 10
-        n_channel = 256
         n_token = 16
         n_token_layer = 6
         n_hidden = 6
@@ -40,7 +37,6 @@ class TestVisualTransformerClassifier:
         visual_transformer_classifier = VisualTransformerClassifier(
             n_token_layer=n_token_layer,
             n_token=n_token,
-            n_channel=n_channel,
             n_hidden=n_hidden,
             n_classes=10,
         )
@@ -50,7 +46,6 @@ class TestVisualTransformerClassifier:
 
     def test_torch_parameter(self):
         """Test whether all parameters of the classifier are found by torch"""
-        n_channel = 256
         n_token = 16
         n_token_layer = 6
         n_hidden = 32
@@ -58,7 +53,6 @@ class TestVisualTransformerClassifier:
         visual_transformer_classifier = VisualTransformerClassifier(
             n_token_layer=n_token_layer,
             n_token=n_token,
-            n_channel=n_channel,
             n_hidden=n_hidden,
             n_classes=10,
         )
