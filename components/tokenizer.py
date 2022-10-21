@@ -2,6 +2,8 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+from utils.layer_utils import clones
+
 
 class FilterTokenLayer(nn.Module):
     """
@@ -73,9 +75,8 @@ class Tokenizer(nn.Module):
     def __init__(self, n_token_layer, n_token, n_channel) -> None:
         super().__init__()
         self.first_layer = FilterTokenLayer(n_token, n_channel)
-        self.recurrent_layer = [
-            RecurrentTokenLayer(n_channel) for _ in range(n_token_layer - 1)
-        ]
+
+        self.recurrent_layer = clones(RecurrentTokenLayer(n_channel), n_token_layer - 1)
 
     def forward(self, feature_map: torch.Tensor) -> torch.Tensor:
         """Forwards the feature map through recurrent tokenizer layers, as no
@@ -104,3 +105,17 @@ class Tokenizer(nn.Module):
         self.first_layer.to(device)
         for r_layer in self.recurrent_layer:
             r_layer.to(device)
+
+
+if __name__ == "__main__":
+    filter_token_layer = FilterTokenLayer(16, 256)
+    for p in filter_token_layer.parameters():
+        print(p.shape)
+    print("#" * 20)
+    recurrent_layer = RecurrentTokenLayer(256)
+    for p in recurrent_layer.parameters():
+        print(p.shape)
+    print("#" * 20)
+    tokenizer = Tokenizer(6, 16, 256)
+    for p in tokenizer.parameters():
+        print(p.shape)

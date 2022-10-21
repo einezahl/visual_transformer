@@ -13,10 +13,7 @@ class VisualTransformer(nn.Module):
     """
 
     def __init__(
-        self,
-        tokenizer: Tokenizer,
-        transformer: Transformer,
-        projector: Projector
+        self, tokenizer: Tokenizer, transformer: Transformer, projector: Projector
     ) -> None:
         super().__init__()
         self.tokenizer = tokenizer

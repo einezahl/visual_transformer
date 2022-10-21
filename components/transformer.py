@@ -32,9 +32,14 @@ class Transformer(nn.Module):
         self_attention = functional.softmax(
             torch.matmul(visual_token_k, visual_token_q.transpose(1, 2)), dim=1
         )
-        visual_token_p = visual_token + \
-            torch.matmul(self_attention, visual_token)
+        visual_token_p = visual_token + torch.matmul(self_attention, visual_token)
         visual_token_self_attention = visual_token_p + functional.relu(
             self.f_2(self.f_1(visual_token_p))
         )
         return visual_token_self_attention
+
+
+if __name__ == "__main__":
+    transformer = Transformer(256, 32)
+    for p in transformer.parameters():
+        print(p.shape)

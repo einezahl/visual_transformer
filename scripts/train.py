@@ -1,3 +1,4 @@
+import hydra
 import torch
 from torch import nn
 from torch import optim
@@ -6,18 +7,21 @@ from torchvision.datasets import CIFAR10
 from torchvision.transforms import ToTensor, Normalize, Compose
 
 from model.visual_transformer_classifier import VisualTransformerClassifier
-
-BATCH_SIZE = 1024
-EPOCHS = 1
+from utils.trainer import Trainer
 
 
-def main() -> None:
+@hydra.main(config_path="../conf", config_name="config")
+def main(config) -> None:
+    print(config)
+    return
+    BATCH_SIZE = 0
+    EPOCHS = 0
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     kwargs = {"num_workers": 1, "pin_memory": True} if device == "cuda" else {}
     transform = Compose([ToTensor(), Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-    train_data = CIFAR10(root="data", train=True, download=True, transform=transform)
+    train_data = CIFAR10(root="../data", train=True, download=True, transform=transform)
     train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True, **kwargs)
-    test_data = CIFAR10(root="data", train=False, download=True, transform=transform)
+    test_data = CIFAR10(root="../data", train=False, download=True, transform=transform)
     test_loader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=True, **kwargs)
     classifier = VisualTransformerClassifier(
         n_token_layer=6,
@@ -31,23 +35,13 @@ def main() -> None:
     loss = nn.CrossEntropyLoss()
     optimizer = optim.Adam(classifier.parameters(), lr=1e-3)
 
-    for epoch in range(EPOCHS):
-        running_loss = 0.0
-        for i, (image_batch, label_batch) in enumerate(train_loader):
-            image_batch = image_batch.to(device)
-            label_batch = label_batch.to(device)
-            optimizer.zero_grad()
-            output = classifier(image_batch)
-            loss_value = loss(output, label_batch)
-            loss_value.backward()
-            optimizer.step()
-            running_loss += loss_value.item()
-        print(f"[{epoch + 1}] loss: {running_loss / 100:.3f}")
-        running_loss = 0.0
+    trainer = Trainer(classifier, loss, optimizer, device)
+
+    trainer.train(train_loader, EPOCHS)
 
     print("Finished Training")
 
-    path = "./saved_model/visual_transformer_classifier.pth"
+    path = "../saved_model/visual_transformer_classifier.pth"
     torch.save(classifier.state_dict(), path)
 
     correct = 0

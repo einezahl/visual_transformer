@@ -7,5 +7,9 @@
     "python.formatting.provider": "black",
     "python.linting.flake8Args": [
         "--max-line-length=88"
-    ]
+    ],
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "${workspaceFolder}"
+    },
+    "jupyter.notebookFileRoot": "${workspaceFolder}",
 }
