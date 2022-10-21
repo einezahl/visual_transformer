@@ -5,3 +5,4 @@ data/*
 playground/**
 **.pth
 **/outputs/**
+log/**
