@@ -10,7 +10,7 @@
             "cwd": "${workspaceFolder}",
             // "cwd": "${fileDirname}",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}:${env:PYTHONPATH}"
+                "PYTHONPATH": "${workspaceFolder}/src/:${env:PYTHONPATH}"
             }
         }
     ]
