@@ -9,13 +9,21 @@ class Paths:
 
 
 @dataclass
-class Params:
+class TrainingParams:
     batch_size: int
     epochs: int
     lr: float
 
 
 @dataclass
+class ModelParams:
+    n_token: int
+    n_token_layer: int
+    n_hidden_layer: int
+
+
+@dataclass
 class CifarConf:
     paths: Paths
-    params: Params
+    training_params: TrainingParams
+    model_params: ModelParams
