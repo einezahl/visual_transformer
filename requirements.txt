@@ -1,7 +1,8 @@
-torch
-torchvision
-numpy
-matplotlib
-pytest
 black
 flake8
+matplotlib
+numpy
+pytest
+tensorboard
+torch
+torchvision
