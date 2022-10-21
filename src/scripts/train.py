@@ -5,8 +5,10 @@ import torch
 from torch import nn
 from torch import optim
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
 from torchvision.datasets import CIFAR10
 from torchvision.transforms import ToTensor, Normalize, Compose
+from torchvision.utils import make_grid
 
 from config import CifarConf
 from model.visual_transformer_classifier import VisualTransformerClassifier
@@ -23,6 +25,8 @@ def main(cfg: CifarConf) -> None:
     epochs = cfg.training_params.epochs
     lr = cfg.training_params.lr
 
+    writer = SummaryWriter(log_dir=cfg.paths.log)
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     kwargs = {"num_workers": 1, "pin_memory": True} if device == "cuda" else {}
 
@@ -35,6 +39,13 @@ def main(cfg: CifarConf) -> None:
         root=cfg.paths.data, train=False, download=True, transform=transform
     )
     test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True, **kwargs)
+
+    image_grid, _ = next(
+        iter(DataLoader(test_data, batch_size=16, shuffle=True, **kwargs))
+    )
+
+    writer.add_image("images", make_grid(image_grid), 0)
+
     classifier = VisualTransformerClassifier(
         n_token_layer=cfg.model_params.n_token_layer,
         n_token=cfg.model_params.n_token,
@@ -43,12 +54,16 @@ def main(cfg: CifarConf) -> None:
     )
     classifier.to(device)
 
+    writer.add_graph(classifier, image_grid.to(device))
+
     loss = nn.CrossEntropyLoss()
     optimizer = optim.Adam(classifier.parameters(), lr=lr)
 
-    trainer = Trainer(classifier, loss, optimizer, device)
+    trainer = Trainer(classifier, loss, optimizer, device, writer)
 
     trainer.train(train_loader, epochs)
+
+    writer.close()
 
     print("Finished Training")
 
