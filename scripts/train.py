@@ -1,3 +1,4 @@
+import hydra
 import torch
 from torch import nn
 from torch import optim
@@ -8,11 +9,13 @@ from torchvision.transforms import ToTensor, Normalize, Compose
 from model.visual_transformer_classifier import VisualTransformerClassifier
 from utils.trainer import Trainer
 
-BATCH_SIZE = 1024
-EPOCHS = 100
 
-
-def main() -> None:
+@hydra.main(config_path="../conf", config_name="config")
+def main(config) -> None:
+    print(config)
+    return
+    BATCH_SIZE = 0
+    EPOCHS = 0
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     kwargs = {"num_workers": 1, "pin_memory": True} if device == "cuda" else {}
     transform = Compose([ToTensor(), Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
